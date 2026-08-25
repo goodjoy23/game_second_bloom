@@ -11,16 +11,23 @@ const OBSTACLES: Array[Rect2] = [
 	Rect2(710.0, 332.0, 190.0, 116.0),
 ]
 
-const DOWN_TEXTURE := preload("res://assets/characters/kang_minwoo/frames/down.png")
-const UP_TEXTURE := preload("res://assets/characters/kang_minwoo/frames/up.png")
-const LEFT_TEXTURE := preload("res://assets/characters/kang_minwoo/frames/left.png")
-const RIGHT_TEXTURE := preload("res://assets/characters/kang_minwoo/frames/right.png")
-
-@onready var sprite: Sprite2D = $Sprite2D
+@onready var sprite: Sprite2D = $PlayerSprite
 
 var movement_enabled := true
 var walk_phase := 0.0
 var facing := "down"
+var character_id := "kang_minwoo"
+var direction_textures: Dictionary = {}
+
+
+func configure_character(new_character_id: String) -> void:
+	character_id = new_character_id
+	direction_textures.clear()
+	for direction in ["down", "up", "left", "right"]:
+		var texture_path := "res://assets/characters/%s/frames/%s.png" % [character_id, direction]
+		direction_textures[direction] = load(texture_path) as Texture2D
+	facing = ""
+	_set_facing("down")
 
 
 func _physics_process(delta: float) -> void:
@@ -89,15 +96,9 @@ func _set_facing(new_facing: String) -> void:
 	if facing == new_facing:
 		return
 	facing = new_facing
-	match facing:
-		"up":
-			sprite.texture = UP_TEXTURE
-		"left":
-			sprite.texture = LEFT_TEXTURE
-		"right":
-			sprite.texture = RIGHT_TEXTURE
-		_:
-			sprite.texture = DOWN_TEXTURE
+	var texture := direction_textures.get(facing) as Texture2D
+	if texture != null:
+		sprite.texture = texture
 
 
 func _is_inside_obstacle(point: Vector2) -> bool:
