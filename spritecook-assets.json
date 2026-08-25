@@ -50,6 +50,33 @@
       "perspective": "topdown",
       "size": "206x198",
       "note": "2x2 4방향 원본. style guide: 강민우 시트 + v1"
+    },
+    {
+      "asset_id": "150da12c-65bb-409b-936e-3c1016a9e11e",
+      "sha12": "23a7a9ba6f6d",
+      "label": "jeong_jieun_sheet_raw_4dir",
+      "path": "assets/characters/jeong_jieun/sheet_raw_4dir.png",
+      "perspective": "topdown",
+      "size": "165x160",
+      "note": "2x2 4방향 원본. style guide: 강민우+윤서정 시트"
+    },
+    {
+      "asset_id": "4a422723-65cd-4ebf-902c-c690be247548",
+      "sha12": "34b00ff6d497",
+      "label": "han_doyun_sheet_raw_4dir",
+      "path": "assets/characters/han_doyun/sheet_raw_4dir.png",
+      "perspective": "topdown",
+      "size": "210x202",
+      "note": "2x2 4방향 원본. style guide: 강민우+윤서정 시트"
+    },
+    {
+      "asset_id": "485d1bc4-0a6c-412d-af0a-547b3f026e2b",
+      "sha12": "b50d544639a2",
+      "label": "bae_suhyeon_sheet_raw_4dir",
+      "path": "assets/characters/bae_suhyeon/sheet_raw_4dir.png",
+      "perspective": "topdown",
+      "size": "203x198",
+      "note": "2x2 4방향 원본. style guide: 강민우+윤서정 시트"
     }
   ],
   "settings": {

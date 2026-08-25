@@ -1,0 +1,51 @@
+{
+  "name": "bae_suhyeon",
+  "frame_size": [
+    32,
+    32
+  ],
+  "sheet": "bae_suhyeon_sheet.png",
+  "layout": "horizontal",
+  "frames": [
+    {
+      "index": 0,
+      "direction": "down",
+      "region": [
+        0,
+        0,
+        32,
+        32
+      ]
+    },
+    {
+      "index": 1,
+      "direction": "up",
+      "region": [
+        32,
+        0,
+        32,
+        32
+      ]
+    },
+    {
+      "index": 2,
+      "direction": "left",
+      "region": [
+        64,
+        0,
+        32,
+        32
+      ]
+    },
+    {
+      "index": 3,
+      "direction": "right",
+      "region": [
+        96,
+        0,
+        32,
+        32
+      ]
+    }
+  ]
+}
