@@ -1,0 +1,288 @@
+{
+  "chapter_id": "chapter_01",
+  "title": "제1장 · 비가 오면 문은 불어난다",
+  "start": "opening_01",
+  "nodes": [
+    {
+      "id": "opening_01",
+      "type": "line",
+      "speaker": "내레이션",
+      "text": "오후 세 시를 넘기자 비는 골목의 모양부터 바꾸기 시작했다. 북카페 ‘오후’의 유리창 너머로 간판의 불빛이 길게 번졌다.",
+      "focus": "none",
+      "next": "opening_02"
+    },
+    {
+      "id": "opening_02",
+      "type": "line",
+      "speaker": "윤서정",
+      "text": "하나, 둘… 정말 꿈쩍도 안 하네.",
+      "focus": "seojeong",
+      "seojeong_mood": "지친 표정",
+      "next": "hyejin_01"
+    },
+    {
+      "id": "hyejin_01",
+      "type": "line",
+      "speaker": "오혜진",
+      "text": "그만해. 그러다 손목에 또 파스 붙여. 수리 기사 온다니까 기다려.",
+      "focus": "none",
+      "next": "arrival_01"
+    },
+    {
+      "id": "arrival_01",
+      "type": "line",
+      "speaker": "내레이션",
+      "text": "세 시 십칠 분. 출입문 위의 종이 둔하게 울렸다. 빗물에 어깨가 젖은 남자가 공구 가방을 들고 서 있었다.",
+      "focus": "minwoo",
+      "minwoo_mood": "비에 젖음",
+      "next": "arrival_02"
+    },
+    {
+      "id": "arrival_02",
+      "type": "line",
+      "speaker": "강민우",
+      "text": "옹이 공방에서 왔습니다. 미닫이문 수리 맡기셨죠.",
+      "focus": "minwoo",
+      "next": "arrival_03"
+    },
+    {
+      "id": "arrival_03",
+      "type": "line",
+      "speaker": "윤서정",
+      "text": "이쪽이에요. 비만 오면 나무가 불어서 꼼짝을 안 하네요.",
+      "focus": "seojeong",
+      "seojeong_mood": "조심스러운 미소",
+      "next": "notice_wrist"
+    },
+    {
+      "id": "notice_wrist",
+      "type": "line",
+      "speaker": "내레이션",
+      "text": "문 아래를 살피던 민우의 시선이 서정의 손목에 붙은 살색 테이프에 잠시 멈췄다.",
+      "focus": "minwoo",
+      "next": "choice_first_care"
+    },
+    {
+      "id": "choice_first_care",
+      "type": "choice",
+      "speaker": "강민우",
+      "text": "손목이 아픈 모양이다. 어떻게 말할까?",
+      "options": [
+        {
+          "text": "“다 고치기 전에는 손대지 마세요.”",
+          "effects": {"trust": 1, "respect": -1},
+          "next": "care_direct"
+        },
+        {
+          "text": "“제가 고칠 때까지 닫아둘까요?”",
+          "effects": {"trust": 2, "respect": 2},
+          "flags": ["asked_before_helping"],
+          "next": "care_ask"
+        },
+        {
+          "text": "말하지 않고 바닥에 작업 천부터 편다.",
+          "effects": {"affection": 1, "minwoo_fatigue": 5},
+          "next": "care_silent"
+        }
+      ]
+    },
+    {
+      "id": "care_direct",
+      "type": "line",
+      "speaker": "윤서정",
+      "text": "…네. 예약 손님 오기 전까지만 부탁드릴게요.",
+      "focus": "seojeong",
+      "seojeong_mood": "조금 굳은 표정",
+      "next": "repair_01"
+    },
+    {
+      "id": "care_ask",
+      "type": "line",
+      "speaker": "윤서정",
+      "text": "예약 손님 오기 전까지만 열리면 돼요. 무리해서 서두르진 마세요.",
+      "focus": "seojeong",
+      "seojeong_mood": "안도한 표정",
+      "next": "repair_01"
+    },
+    {
+      "id": "care_silent",
+      "type": "line",
+      "speaker": "내레이션",
+      "text": "민우는 문 앞에 천을 펴고 공구를 꺼냈다. 서정은 손목의 테이프 끝을 소매 안으로 감췄다.",
+      "focus": "none",
+      "next": "repair_01"
+    },
+    {
+      "id": "repair_01",
+      "type": "line",
+      "speaker": "내레이션",
+      "text": "나사를 풀 때마다 작은 금속음이 빗소리 사이로 또렷하게 솟았다. 민우의 젖은 작업복에서 물이 한 방울씩 떨어졌다.",
+      "focus": "minwoo",
+      "next": "tea_01"
+    },
+    {
+      "id": "tea_01",
+      "type": "line",
+      "speaker": "윤서정",
+      "text": "단 건 괜찮으세요? 생강차에 꿀을 얼마나 넣을지 몰라서요.",
+      "focus": "seojeong",
+      "seojeong_mood": "살피는 표정",
+      "next": "tea_02"
+    },
+    {
+      "id": "tea_02",
+      "type": "line",
+      "speaker": "강민우",
+      "text": "조금만 부탁드립니다.",
+      "focus": "minwoo",
+      "minwoo_mood": "뜻밖의 호의",
+      "next": "choice_tea"
+    },
+    {
+      "id": "choice_tea",
+      "type": "choice",
+      "speaker": "강민우",
+      "text": "서정이 마른 수건과 김이 오르는 찻잔을 내민다.",
+      "options": [
+        {
+          "text": "공구를 내려놓고 손부터 씻는다.",
+          "effects": {"trust": 3, "affection": 2, "minwoo_fatigue": -8},
+          "flags": ["accepted_ginger_tea"],
+          "next": "tea_accept"
+        },
+        {
+          "text": "“이것만 마저 조이고 마시겠습니다.”",
+          "effects": {"trust": 1, "minwoo_fatigue": 3},
+          "next": "tea_delay"
+        },
+        {
+          "text": "“괜찮습니다. 일 끝나고 마시죠.”",
+          "effects": {"affection": -1, "resentment": 1},
+          "next": "tea_refuse"
+        }
+      ]
+    },
+    {
+      "id": "tea_accept",
+      "type": "line",
+      "speaker": "강민우",
+      "text": "감사합니다. 손부터 씻고 올게요.",
+      "focus": "minwoo",
+      "minwoo_mood": "멋쩍은 미소",
+      "next": "tea_memory"
+    },
+    {
+      "id": "tea_delay",
+      "type": "line",
+      "speaker": "윤서정",
+      "text": "식으면 더 달아져요. 문은 도망 안 가니까 천천히 하세요.",
+      "focus": "seojeong",
+      "seojeong_mood": "옅은 미소",
+      "next": "tea_memory"
+    },
+    {
+      "id": "tea_refuse",
+      "type": "line",
+      "speaker": "내레이션",
+      "text": "찻잔의 김이 두 사람 사이에서 먼저 옅어졌다. 민우는 서정의 눈가에 스친 무안함을 뒤늦게 알아보았다.",
+      "focus": "none",
+      "next": "door_test"
+    },
+    {
+      "id": "tea_memory",
+      "type": "line",
+      "speaker": "강민우",
+      "text": "오랜만이네요. 누가 단 걸 괜찮냐고 물어봐 준 게요.",
+      "focus": "minwoo",
+      "minwoo_mood": "조용한 진심",
+      "next": "tea_reply"
+    },
+    {
+      "id": "tea_reply",
+      "type": "line",
+      "speaker": "윤서정",
+      "text": "그럼 다음엔 안 물어보고 조금만 넣을게요.",
+      "focus": "seojeong",
+      "seojeong_mood": "따뜻한 미소",
+      "next": "door_test"
+    },
+    {
+      "id": "door_test",
+      "type": "line",
+      "speaker": "내레이션",
+      "text": "수리를 마친 문은 레일 위를 낮게 미끄러졌다. 닫히기 직전 아주 작은 숨소리만 났다.",
+      "focus": "none",
+      "next": "door_01"
+    },
+    {
+      "id": "door_01",
+      "type": "line",
+      "speaker": "윤서정",
+      "text": "이렇게 가벼운 문이었네요.",
+      "focus": "seojeong",
+      "seojeong_mood": "환한 미소",
+      "next": "door_02"
+    },
+    {
+      "id": "door_02",
+      "type": "line",
+      "speaker": "강민우",
+      "text": "문이 원래 무거운 건 아니었으니까요.",
+      "focus": "minwoo",
+      "minwoo_mood": "작은 미소",
+      "next": "choice_revisit"
+    },
+    {
+      "id": "choice_revisit",
+      "type": "choice",
+      "speaker": "강민우",
+      "text": "비가 마른 뒤 문 상태를 다시 봐야 한다. 다음 만남을 어떻게 약속할까?",
+      "options": [
+        {
+          "text": "“제가 먼저 연락드리고 오겠습니다.”",
+          "effects": {"respect": 3},
+          "flags": ["asked_before_revisit"],
+          "next": "revisit_reply"
+        },
+        {
+          "text": "“다음 주 이 시간에 다시 오겠습니다.”",
+          "effects": {"trust": 1},
+          "next": "revisit_reply"
+        },
+        {
+          "text": "“문이 아니라 차 때문에 올지도 모르겠습니다.”",
+          "effects": {"affection": 3, "trust": 1},
+          "flags": ["early_flirt"],
+          "next": "revisit_flirt"
+        }
+      ]
+    },
+    {
+      "id": "revisit_reply",
+      "type": "line",
+      "speaker": "윤서정",
+      "text": "그럼 비 그친 다음, 오후 네 시쯤 오세요. 그때가 제일 한가해요.",
+      "focus": "seojeong",
+      "seojeong_mood": "기다리는 미소",
+      "flags": ["four_oclock_promise"],
+      "next": "ending_01"
+    },
+    {
+      "id": "revisit_flirt",
+      "type": "line",
+      "speaker": "윤서정",
+      "text": "차값은 따로 받을게요. 그래도… 오후 네 시쯤이면 괜찮아요.",
+      "focus": "seojeong",
+      "seojeong_mood": "웃음을 참는 표정",
+      "flags": ["four_oclock_promise"],
+      "next": "ending_01"
+    },
+    {
+      "id": "ending_01",
+      "type": "end",
+      "speaker": "제1장 완료",
+      "text": "인연은 아직 이름이 없다. 하지만 두 사람의 달력에는 같은 오후가 하나 생겼다."
+    }
+  ]
+}
+
