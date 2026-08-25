@@ -1,9 +1,13 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
-[ext_resource type="Script" path="res://scripts/rain_backdrop.gd" id="2_backdrop"]
+[ext_resource type="Script" path="res://scripts/cafe_world_3d.gd" id="2_world"]
 [ext_resource type="Script" path="res://scripts/player_controller.gd" id="3_player"]
 [ext_resource type="Texture2D" path="res://assets/characters/kang_minwoo/frames/down.png" id="4_player"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
+radius = 0.3
+height = 1.25
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -14,7 +18,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_main")
 
-[node name="CafeBackdrop" type="Control" parent="."]
+[node name="WorldViewportContainer" type="SubViewportContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,66 +26,67 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-script = ExtResource("2_backdrop")
+stretch = true
 
-[node name="World" type="Node2D" parent="."]
-y_sort_enabled = true
+[node name="WorldViewport" type="SubViewport" parent="WorldViewportContainer"]
+handle_input_locally = false
+size = Vector2i(1280, 720)
+render_target_update_mode = 4
 
-[node name="NpcLayer" type="Node2D" parent="World"]
+[node name="World3D" type="Node3D" parent="WorldViewportContainer/WorldViewport"]
+
+[node name="CafeWorld3D" type="Node3D" parent="WorldViewportContainer/WorldViewport/World3D"]
+script = ExtResource("2_world")
+
+[node name="NpcLayer" type="Node3D" parent="WorldViewportContainer/WorldViewport/World3D"]
 unique_name_in_owner = true
 
-[node name="Player" type="CharacterBody2D" parent="World"]
+[node name="Player" type="CharacterBody3D" parent="WorldViewportContainer/WorldViewport/World3D"]
 unique_name_in_owner = true
-position = Vector2(330, 532)
+position = Vector3(-3.15, 0, 2.55)
 script = ExtResource("3_player")
 
-[node name="Shadow" type="Polygon2D" parent="World/Player"]
-position = Vector2(0, -3)
-polygon = PackedVector2Array(-27, 0, -18, -7, 18, -7, 27, 0, 18, 7, -18, 7)
-color = Color(0.02, 0.025, 0.025, 0.42)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldViewportContainer/WorldViewport/World3D/Player"]
+position = Vector3(0, 0.625, 0)
+shape = SubResource("CapsuleShape3D_player")
 
-[node name="PlayerSprite" type="Sprite2D" parent="World/Player"]
+[node name="PlayerSprite" type="Sprite3D" parent="WorldViewportContainer/WorldViewport/World3D/Player"]
 unique_name_in_owner = true
 texture_filter = 1
-position = Vector2(0, -36)
-scale = Vector2(2.35, 2.35)
+position = Vector3(0, 0.93, 0)
 texture = ExtResource("4_player")
+pixel_size = 0.03
+billboard = 1
 
-[node name="PlayerTag" type="PanelContainer" parent="World/Player"]
+[node name="PlayerName" type="Label3D" parent="WorldViewportContainer/WorldViewport/World3D/Player"]
 unique_name_in_owner = true
-z_index = 8
-offset_left = -66.0
-offset_top = -103.0
-offset_right = 66.0
-offset_bottom = -55.0
-mouse_filter = 2
+position = Vector3(0, 1.67, 0)
+billboard = 1
+no_depth_test = true
+pixel_size = 0.006
+modulate = Color(0.94, 0.96, 0.93, 1)
+outline_modulate = Color(0.05, 0.065, 0.07, 0.92)
+font_size = 26
+outline_size = 8
+text = "[남] 플레이어"
 
-[node name="Margin" type="MarginContainer" parent="World/Player/PlayerTag"]
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 5
-
-[node name="VBox" type="VBoxContainer" parent="World/Player/PlayerTag/Margin"]
-layout_mode = 2
-theme_override_constants/separation = 0
-
-[node name="PlayerName" type="Label" parent="World/Player/PlayerTag/Margin/VBox"]
+[node name="PlayerMood" type="Label3D" parent="WorldViewportContainer/WorldViewport/World3D/Player"]
 unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.94, 0.96, 0.93, 1)
-theme_override_font_sizes/font_size = 13
-text = "플레이어"
-horizontal_alignment = 1
-
-[node name="PlayerMood" type="Label" parent="World/Player/PlayerTag/Margin/VBox"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.72, 0.81, 0.81, 1)
-theme_override_font_sizes/font_size = 10
+position = Vector3(0, 1.43, 0)
+billboard = 1
+no_depth_test = true
+pixel_size = 0.006
+modulate = Color(0.72, 0.81, 0.81, 1)
+outline_modulate = Color(0.05, 0.065, 0.07, 0.92)
+font_size = 19
+outline_size = 7
 text = "선택 대기"
-horizontal_alignment = 1
+
+[node name="WorldCamera" type="Camera3D" parent="WorldViewportContainer/WorldViewport/World3D"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 0.777146, 0.62932, 0, -0.62932, 0.777146, 0, 8.5, 10.2)
+current = true
+fov = 47.0
 
 [node name="Vignette" type="ColorRect" parent="."]
 mouse_filter = 2
@@ -99,38 +104,38 @@ layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_left = 28.0
-offset_top = 22.0
+offset_top = 12.0
 offset_right = -28.0
-offset_bottom = 96.0
+offset_bottom = 66.0
 grow_horizontal = 2
 
 [node name="Margin" type="MarginContainer" parent="TopHud"]
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 14
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
 
 [node name="HBox" type="HBoxContainer" parent="TopHud/Margin"]
 layout_mode = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 10
 
 [node name="TitleStack" type="VBoxContainer" parent="TopHud/Margin/HBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(250, 0)
+custom_minimum_size = Vector2(190, 0)
 theme_override_constants/separation = 1
 
 [node name="GameTitle" type="Label" parent="TopHud/Margin/HBox/TitleStack"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.98, 0.84, 0.63, 1)
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 16
 text = "오후 네 시, 다시 봄"
 
 [node name="ChapterLabel" type="Label" parent="TopHud/Margin/HBox/TitleStack"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.66, 0.74, 0.74, 1)
-theme_override_font_sizes/font_size = 11
+theme_override_font_sizes/font_size = 9
 text = "북카페 오후 · 인연이 머무는 시간"
 
 [node name="Divider" type="VSeparator" parent="TopHud/Margin/HBox"]
@@ -144,51 +149,51 @@ theme_override_constants/separation = 3
 [node name="ObjectiveTitle" type="Label" parent="TopHud/Margin/HBox/ObjectiveStack"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.77, 0.63, 0.44, 1)
-theme_override_font_sizes/font_size = 10
+theme_override_font_sizes/font_size = 9
 text = "현재 안내"
 
 [node name="ObjectiveLabel" type="Label" parent="TopHud/Margin/HBox/ObjectiveStack"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.91, 0.92, 0.87, 1)
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 11
 text = "플레이할 캐릭터를 선택하세요."
 text_overrun_behavior = 3
 
 [node name="StatusStack" type="VBoxContainer" parent="TopHud/Margin/HBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(205, 0)
+custom_minimum_size = Vector2(175, 0)
 theme_override_constants/separation = 4
 
 [node name="StatusTitle" type="Label" parent="TopHud/Margin/HBox/StatusStack"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.65, 0.72, 0.71, 1)
-theme_override_font_sizes/font_size = 10
+theme_override_font_sizes/font_size = 9
 text = "관계 상태"
 
 [node name="StatusLabel" type="Label" parent="TopHud/Margin/HBox/StatusStack"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.78, 0.82, 0.79, 1)
-theme_override_font_sizes/font_size = 11
+theme_override_font_sizes/font_size = 10
 text = "애정 0 · 신뢰 0 · 존중 0"
 
 [node name="RestartButton" type="Button" parent="TopHud/Margin/HBox"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(80, 42)
+custom_minimum_size = Vector2(72, 32)
 text = "첫 장면"
 
 [node name="LoadButton" type="Button" parent="TopHud/Margin/HBox"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(80, 42)
+custom_minimum_size = Vector2(72, 32)
 text = "이어하기"
 
 [node name="CharacterButton" type="Button" parent="TopHud/Margin/HBox"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(96, 42)
+custom_minimum_size = Vector2(88, 32)
 text = "캐릭터 변경"
 
 [node name="LocationLabel" type="Label" parent="."]
@@ -243,14 +248,14 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.35, 0.24, 0.16, 1)
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 13
 text = "윤서정"
 
 [node name="AutoLabel" type="Label" parent="SpeechBubble/Margin/VBox/Header"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.48, 0.42, 0.34, 1)
-theme_override_font_sizes/font_size = 10
+theme_override_font_sizes/font_size = 9
 text = "자동 대화"
 
 [node name="BubbleText" type="RichTextLabel" parent="SpeechBubble/Margin/VBox"]
@@ -260,7 +265,7 @@ custom_minimum_size = Vector2(374, 48)
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_colors/default_color = Color(0.16, 0.14, 0.12, 1)
-theme_override_font_sizes/normal_font_size = 16
+theme_override_font_sizes/normal_font_size = 13
 fit_content = true
 scroll_active = false
 autowrap_mode = 2
@@ -270,13 +275,13 @@ text = "대화 내용"
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.32, 0.49, 0.39, 1)
-theme_override_font_sizes/font_size = 10
+theme_override_font_sizes/font_size = 9
 text = ""
 
 [node name="ChoiceBox" type="VBoxContainer" parent="SpeechBubble/Margin/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 4
 
 [node name="Footer" type="HBoxContainer" parent="SpeechBubble/Margin/VBox"]
 layout_mode = 2
@@ -286,13 +291,14 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.46, 0.40, 0.34, 1)
-theme_override_font_sizes/font_size = 10
+theme_override_font_sizes/font_size = 9
 text = "잠시 후 자동으로 이어집니다"
 
 [node name="ContinueButton" type="Button" parent="SpeechBubble/Margin/VBox/Footer"]
 unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(88, 30)
+theme_override_font_sizes/font_size = 11
 text = "다음  ▶"
 
 [node name="TypewriterTimer" type="Timer" parent="."]
@@ -360,7 +366,7 @@ horizontal_alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.68, 0.75, 0.74, 1)
 theme_override_font_sizes/font_size = 12
-text = "선택한 인물만 직접 움직입니다. 나머지 인물은 카페 안에서 각자의 방식으로 반응합니다."
+text = "남성은 청색, 여성은 장미색으로 표시됩니다. 선택하지 않은 인물은 NPC로 움직이며 반응합니다."
 horizontal_alignment = 1
 
 [node name="CharacterChoiceBox" type="HBoxContainer" parent="SelectionOverlay/SelectionPanel/Margin/VBox"]

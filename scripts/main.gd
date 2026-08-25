@@ -1,9 +1,9 @@
 extends Control
 
 const CHAPTER_PATH := "res://data/chapter_01.json"
-const AUTO_TALK_DISTANCE := 105.0
-const TALK_RELEASE_DISTANCE := 145.0
-const PLAYER_START := Vector2(330.0, 532.0)
+const AUTO_TALK_DISTANCE := 1.25
+const TALK_RELEASE_DISTANCE := 1.75
+const PLAYER_START := Vector3(-3.15, 0.0, 2.55)
 
 const CHARACTER_ORDER := [
 	"kang_minwoo",
@@ -17,9 +17,11 @@ const CHARACTERS := {
 	"kang_minwoo": {
 		"name": "강민우",
 		"age": 46,
+		"gender": "male",
+		"gender_label": "남성",
 		"role": "목공방 운영",
 		"mood": "말보다 손이 먼저",
-		"npc_position": Vector2(322.0, 530.0),
+		"npc_position": Vector3(-3.15, 0.0, 2.55),
 		"greeting": "비가 더 거세지네요. 미끄러우니 천천히 걸어요.",
 		"reply": "괜찮으면, 제가 도울 일이 있는지 먼저 물어볼게요.",
 		"response": "서두르지 않아도 됩니다. 여기서는 천천히 이야기해요.",
@@ -27,9 +29,11 @@ const CHARACTERS := {
 	"yun_seojeong": {
 		"name": "윤서정",
 		"age": 44,
+		"gender": "female",
+		"gender_label": "여성",
 		"role": "번역가 · 카페 매니저",
 		"mood": "창밖의 비를 듣는 중",
-		"npc_position": Vector2(888.0, 264.0),
+		"npc_position": Vector3(3.10, 0.0, -2.15),
 		"greeting": "어서 오세요. 비 냄새가 책장 안쪽까지 들어왔네요.",
 		"reply": "괜찮다는 말보다, 오늘은 솔직하게 이야기해 볼게요.",
 		"response": "따뜻한 차를 내올게요. 잠깐 숨을 고르고 가세요.",
@@ -37,9 +41,11 @@ const CHARACTERS := {
 	"jeong_jieun": {
 		"name": "정지은",
 		"age": 42,
+		"gender": "female",
+		"gender_label": "여성",
 		"role": "베이커리 대표",
 		"mood": "새벽 일을 마친 오후",
-		"npc_position": Vector2(348.0, 370.0),
+		"npc_position": Vector3(-4.10, 0.0, 0.55),
 		"greeting": "빵은 식기 전에 먹어야 해요. 고민도 너무 오래 묵히면 딱딱해지고요.",
 		"reply": "오늘은 농담 뒤로 숨지 않고, 하고 싶은 말을 해볼래요.",
 		"response": "좋아요. 대신 서로의 일정부터 솔직하게 맞춰봐요.",
@@ -47,9 +53,11 @@ const CHARACTERS := {
 	"han_doyun": {
 		"name": "한도윤",
 		"age": 48,
+		"gender": "male",
+		"gender_label": "남성",
 		"role": "출판사 편집팀장",
 		"mood": "일정표를 잠시 덮음",
-		"npc_position": Vector2(1080.0, 450.0),
+		"npc_position": Vector3(4.65, 0.0, 1.65),
 		"greeting": "계획에 없던 오후도 가끔은 필요하더군요.",
 		"reply": "정답을 정리하기보다, 오늘은 상대의 말을 끝까지 들어볼게요.",
 		"response": "그게 좋겠습니다. 해결보다 이해가 먼저인 날도 있으니까요.",
@@ -57,9 +65,11 @@ const CHARACTERS := {
 	"bae_suhyeon": {
 		"name": "배수현",
 		"age": 47,
+		"gender": "female",
+		"gender_label": "여성",
 		"role": "인테리어 실장",
 		"mood": "공간의 결을 살피는 중",
-		"npc_position": Vector2(690.0, 548.0),
+		"npc_position": Vector3(1.05, 0.0, 2.80),
 		"greeting": "이 카페는 빈자리를 잘 남겨뒀네요. 사람 사이도 그래야 편하죠.",
 		"reply": "가까워지는 것과 서로의 자리를 지키는 건 함께 가능하다고 믿어요.",
 		"response": "그 말을 기억할게요. 거리를 거절로 오해하지 않도록요.",
@@ -81,12 +91,12 @@ const NAME_TO_ID := {
 @onready var restart_button: Button = %RestartButton
 @onready var load_button: Button = %LoadButton
 @onready var character_button: Button = %CharacterButton
-@onready var npc_layer: Node2D = %NpcLayer
+@onready var world_camera: Camera3D = %WorldCamera
+@onready var npc_layer: Node3D = %NpcLayer
 @onready var player: PlayerController = %Player
-@onready var player_sprite: Sprite2D = %PlayerSprite
-@onready var player_tag: PanelContainer = %PlayerTag
-@onready var player_name: Label = %PlayerName
-@onready var player_mood: Label = %PlayerMood
+@onready var player_sprite: Sprite3D = %PlayerSprite
+@onready var player_name: Label3D = %PlayerName
+@onready var player_mood: Label3D = %PlayerMood
 @onready var speech_bubble: PanelContainer = %SpeechBubble
 @onready var bubble_tail: Polygon2D = %BubbleTail
 @onready var bubble_speaker: Label = %BubbleSpeaker
@@ -115,9 +125,12 @@ var current_full_text := ""
 var is_typing := false
 var dialogue_active := false
 var ambient_mode := false
+var ambient_followup_story := false
+var conversation_kind := ""
 var ambient_lines: Array[Dictionary] = []
 var ambient_index := 0
 var visited: Dictionary = {}
+var selected_choice_index := -1
 
 
 func _ready() -> void:
@@ -130,8 +143,8 @@ func _ready() -> void:
 	_show_character_selection()
 
 
-func _process(_delta: float) -> void:
-	_animate_npcs()
+func _process(delta: float) -> void:
+	_animate_npcs(delta)
 	if selection_overlay.visible:
 		return
 	if dialogue_active:
@@ -173,9 +186,10 @@ func _build_character_choices() -> void:
 
 	for character_id in CHARACTER_ORDER:
 		var data: Dictionary = CHARACTERS[character_id]
+		var gender_color := _gender_color(str(data["gender"]))
 		var card := PanelContainer.new()
 		card.custom_minimum_size = Vector2(205.0, 245.0)
-		card.add_theme_stylebox_override("panel", _make_panel_style(Color("#17262bdd"), Color("#4f666a"), 1, 14))
+		card.add_theme_stylebox_override("panel", _make_panel_style(Color("#17262bdd"), gender_color, 2, 14))
 
 		var margin := MarginContainer.new()
 		margin.add_theme_constant_override("margin_left", 12)
@@ -203,6 +217,13 @@ func _build_character_choices() -> void:
 		name_label.add_theme_color_override("font_color", Color("#f3e6cf"))
 		name_label.add_theme_font_size_override("font_size", 16)
 		stack.add_child(name_label)
+
+		var gender_label := Label.new()
+		gender_label.text = "%s 캐릭터" % data["gender_label"]
+		gender_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		gender_label.add_theme_color_override("font_color", gender_color)
+		gender_label.add_theme_font_size_override("font_size", 11)
+		stack.add_child(gender_label)
 
 		var role_label := Label.new()
 		role_label.text = str(data["role"])
@@ -238,15 +259,16 @@ func _select_character(character_id: String) -> void:
 	player.configure_character(character_id)
 	player.global_position = PLAYER_START
 	player.visible = true
-	player_name.text = "%s · 나" % data["name"]
+	player_name.text = "%s %s · 나" % [_gender_marker(str(data["gender"])), data["name"]]
 	player_mood.text = str(data["mood"])
+	player_name.modulate = _gender_color(str(data["gender"])).lightened(0.18)
 	_spawn_npcs()
 	selection_overlay.visible = false
 	proximity_latch = ""
 	active_npc_id = ""
 	player.set_movement_enabled(true)
 	chapter_label.text = "북카페 오후 · %s의 시점" % data["name"]
-	objective_label.text = "방향키/WASD로 움직여 다른 인물에게 가까이 가보세요."
+	objective_label.text = "방향키로 움직여 다른 인물에게 가까이 가보세요."
 	var has_story := not _canonical_partner().is_empty()
 	restart_button.visible = has_story
 	load_button.visible = has_story and GameState.has_save()
@@ -258,82 +280,62 @@ func _spawn_npcs() -> void:
 		child.queue_free()
 	npc_nodes.clear()
 
+	var spawn_index := 0
 	for character_id in CHARACTER_ORDER:
 		if character_id == selected_character_id:
 			continue
 		var data: Dictionary = CHARACTERS[character_id]
-		var npc := Node2D.new()
+		var npc := Node3D.new()
 		npc.name = "NPC_%s" % character_id
 		npc.position = data["npc_position"]
 		npc.set_meta("character_id", character_id)
+		npc.set_meta("anchor_position", data["npc_position"])
+		npc.set_meta("wander_phase", float(spawn_index) * 1.71)
+		npc.set_meta("facing", "down")
 		npc_layer.add_child(npc)
 
-		var shadow := Polygon2D.new()
-		shadow.position = Vector2(0.0, -3.0)
-		shadow.polygon = PackedVector2Array([
-			Vector2(-25.0, 0.0), Vector2(-17.0, -7.0), Vector2(17.0, -7.0),
-			Vector2(25.0, 0.0), Vector2(17.0, 7.0), Vector2(-17.0, 7.0),
-		])
-		shadow.color = Color(0.02, 0.025, 0.025, 0.42)
-		npc.add_child(shadow)
-
-		var sprite := Sprite2D.new()
+		var sprite := Sprite3D.new()
 		sprite.name = "Sprite"
-		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		sprite.position = Vector2(0.0, -36.0)
-		sprite.scale = Vector2(2.35, 2.35)
+		sprite.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		sprite.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST
+		sprite.position = Vector3(0.0, 0.96, 0.0)
+		sprite.pixel_size = 0.03
+		sprite.shaded = true
 		sprite.texture = load("res://assets/characters/%s/frames/down.png" % character_id)
 		npc.add_child(sprite)
 
-		var tag := PanelContainer.new()
-		tag.name = "Tag"
-		tag.z_index = 8
-		tag.position = Vector2(-67.0, -103.0)
-		tag.size = Vector2(134.0, 48.0)
-		tag.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		tag.add_theme_stylebox_override("panel", _make_panel_style(Color("#241f1bdd"), Color("#8f765a"), 1, 10))
-		npc.add_child(tag)
-
-		var margin := MarginContainer.new()
-		margin.add_theme_constant_override("margin_left", 8)
-		margin.add_theme_constant_override("margin_top", 5)
-		margin.add_theme_constant_override("margin_right", 8)
-		margin.add_theme_constant_override("margin_bottom", 5)
-		tag.add_child(margin)
-
-		var stack := VBoxContainer.new()
-		stack.add_theme_constant_override("separation", 0)
-		margin.add_child(stack)
-
-		var name_label := Label.new()
-		name_label.text = str(data["name"])
-		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		name_label.add_theme_color_override("font_color", Color("#f5eee3"))
-		name_label.add_theme_font_size_override("font_size", 12)
-		stack.add_child(name_label)
-
-		var mood_label := Label.new()
-		mood_label.text = str(data["mood"])
-		mood_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		mood_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		mood_label.add_theme_color_override("font_color", Color("#c5ad8e"))
-		mood_label.add_theme_font_size_override("font_size", 9)
-		stack.add_child(mood_label)
+		var name_label := Label3D.new()
+		name_label.name = "Tag"
+		name_label.text = "%s %s\n%s" % [
+			_gender_marker(str(data["gender"])),
+			data["name"],
+			data["mood"],
+		]
+		name_label.position = Vector3(0.0, 1.72, 0.0)
+		name_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		name_label.no_depth_test = true
+		name_label.font_size = 27
+		name_label.outline_size = 9
+		name_label.pixel_size = 0.006
+		name_label.modulate = _gender_color(str(data["gender"])).lightened(0.18)
+		name_label.outline_modulate = Color("#172024")
+		npc.add_child(name_label)
 		npc_nodes[character_id] = npc
+		spawn_index += 1
 
 
 func _update_proximity_conversations() -> void:
 	var nearest_id := ""
 	var nearest_distance := INF
 	for character_id in npc_nodes:
-		var npc := npc_nodes[character_id] as Node2D
+		var npc := npc_nodes[character_id] as Node3D
 		var distance := player.global_position.distance_to(npc.global_position)
 		if distance < nearest_distance:
 			nearest_distance = distance
 			nearest_id = character_id
 
 	if not proximity_latch.is_empty():
-		var latched_npc := npc_nodes.get(proximity_latch) as Node2D
+		var latched_npc := npc_nodes.get(proximity_latch) as Node3D
 		if latched_npc == null or player.global_position.distance_to(latched_npc.global_position) > TALK_RELEASE_DISTANCE:
 			proximity_latch = ""
 
@@ -348,7 +350,7 @@ func _begin_proximity_conversation(npc_id: String) -> void:
 	active_npc_id = npc_id
 	dialogue_active = true
 	player.set_movement_enabled(false)
-	var npc := npc_nodes[npc_id] as Node2D
+	var npc := npc_nodes[npc_id] as Node3D
 	player.face_toward(npc.global_position)
 	_face_npc_toward(npc_id, player.global_position)
 	speech_bubble.visible = true
@@ -357,26 +359,71 @@ func _begin_proximity_conversation(npc_id: String) -> void:
 	var tween := create_tween()
 	tween.tween_property(speech_bubble, "modulate:a", 1.0, 0.14)
 
-	if npc_id == _canonical_partner():
+	var player_gender := str(CHARACTERS[selected_character_id]["gender"])
+	var npc_gender := str(CHARACTERS[npc_id]["gender"])
+	if npc_id == _canonical_partner() and player_gender == "male":
 		ambient_mode = false
 		auto_label.text = "이야기"
 		bubble_hint.text = "스페이스바로 이어가기"
 		_start_new_chapter()
 	else:
-		_start_ambient_conversation(npc_id)
+		_start_gender_conversation(npc_id, player_gender, npc_gender)
 
 
-func _start_ambient_conversation(npc_id: String) -> void:
+func _start_gender_conversation(npc_id: String, player_gender: String, npc_gender: String) -> void:
 	ambient_mode = true
 	ambient_index = 0
+	ambient_followup_story = false
 	var npc_data: Dictionary = CHARACTERS[npc_id]
 	var player_data: Dictionary = CHARACTERS[selected_character_id]
-	ambient_lines = [
-		{"speaker_id": npc_id, "speaker": npc_data["name"], "text": npc_data["greeting"]},
-		{"speaker_id": selected_character_id, "speaker": player_data["name"], "text": player_data["reply"]},
-		{"speaker_id": npc_id, "speaker": npc_data["name"], "text": npc_data["response"]},
-	]
-	auto_label.text = "자동 대화"
+
+	if player_gender == npc_gender:
+		conversation_kind = "peer_%s" % player_gender
+		auto_label.text = "동료 대화"
+		if player_gender == "male":
+			ambient_lines = [
+				{"speaker_id": npc_id, "speaker": npc_data["name"], "text": "일 얘기는 잠시 접어두죠. 요즘은 어떻게 지냅니까?"},
+				{"speaker_id": selected_character_id, "speaker": player_data["name"], "text": "버티는 것과 괜찮은 건 다르더군요. 오늘은 좀 쉬어가려고요."},
+				{"speaker_id": npc_id, "speaker": npc_data["name"], "text": "잘 생각했습니다. 말없이 앉아 있어도 편한 자리가 필요하니까요."},
+			]
+		else:
+			ambient_lines = [
+				{"speaker_id": npc_id, "speaker": npc_data["name"], "text": "오늘만큼은 일과 돌봄 얘기 말고, 당신 얘기를 듣고 싶어요."},
+				{"speaker_id": selected_character_id, "speaker": player_data["name"], "text": "좋아요. 누군가의 역할이 아닌 내 마음부터 이야기해 볼게요."},
+				{"speaker_id": npc_id, "speaker": npc_data["name"], "text": "그럼 천천히요. 서로의 시간을 재촉하지 않기로 해요."},
+			]
+	elif player_gender == "female":
+		conversation_kind = "female_first_meeting"
+		auto_label.text = "첫 만남 · 여성 시점"
+		ambient_followup_story = selected_character_id == "yun_seojeong" and npc_id == "kang_minwoo"
+		ambient_lines = [
+			{
+				"speaker_id": selected_character_id,
+				"speaker": player_data["name"],
+				"text": "처음 보는 얼굴이다. 먼저 말을 걸어도 괜찮을까, 잠시 망설였다.",
+			},
+			{"speaker_id": npc_id, "speaker": npc_data["name"], "text": npc_data["greeting"]},
+			{"speaker_id": selected_character_id, "speaker": player_data["name"], "text": player_data["reply"]},
+			{"speaker_id": npc_id, "speaker": npc_data["name"], "text": npc_data["response"]},
+			{
+				"speaker_id": selected_character_id,
+				"speaker": player_data["name"],
+				"text": "짧은 인사였지만, 이 사람을 조금 더 알고 싶다는 생각이 들었다.",
+			},
+		]
+	else:
+		conversation_kind = "male_first_meeting"
+		auto_label.text = "첫 만남 · 남성 시점"
+		ambient_lines = [
+			{"speaker_id": npc_id, "speaker": npc_data["name"], "text": npc_data["greeting"]},
+			{
+				"speaker_id": selected_character_id,
+				"speaker": player_data["name"],
+				"text": "반갑습니다. 제가 먼저 답을 정하지 않고, 천천히 당신 이야기를 듣고 싶습니다.",
+			},
+			{"speaker_id": npc_id, "speaker": npc_data["name"], "text": npc_data["response"]},
+		]
+
 	bubble_hint.text = "잠시 후 자동으로 이어집니다"
 	continue_button.visible = false
 	_clear_choices()
@@ -385,7 +432,15 @@ func _start_ambient_conversation(npc_id: String) -> void:
 
 func _show_ambient_line() -> void:
 	if ambient_index >= ambient_lines.size():
-		_finish_conversation()
+		if ambient_followup_story:
+			ambient_mode = false
+			ambient_followup_story = false
+			auto_label.text = "제1장 · 첫 만남"
+			bubble_hint.text = "스페이스바로 이어가기"
+			continue_button.visible = true
+			_start_new_chapter()
+		else:
+			_finish_conversation()
 		return
 	var line: Dictionary = ambient_lines[ambient_index]
 	feedback_label.text = ""
@@ -420,6 +475,7 @@ func _restart_story() -> void:
 
 
 func _start_new_chapter() -> void:
+	conversation_kind = "story"
 	GameState.reset()
 	visited.clear()
 	feedback_label.text = ""
@@ -473,6 +529,7 @@ func _show_line(node: Dictionary) -> void:
 	_clear_choices()
 	next_node_id = str(node.get("next", ""))
 	continue_button.visible = true
+	bubble_hint.text = "스페이스바로 이어가기"
 	feedback_label.text = ""
 	var speaker := str(node.get("speaker", "내레이션"))
 	_show_bubble_line(speaker, str(node.get("text", "")), _speaker_character_id(speaker))
@@ -482,6 +539,7 @@ func _show_choice(node: Dictionary) -> void:
 	_clear_choices()
 	next_node_id = ""
 	continue_button.visible = false
+	bubble_hint.text = "↑↓ 선택 · 스페이스바로 전달"
 	var speaker := str(node.get("speaker", "선택"))
 	_show_bubble_line(speaker, str(node.get("text", "")), _speaker_character_id(speaker))
 	for option_value in node.get("options", []):
@@ -489,13 +547,15 @@ func _show_choice(node: Dictionary) -> void:
 			continue
 		var option: Dictionary = option_value
 		var button := Button.new()
-		button.text = str(option.get("text", "선택"))
+		var option_text := str(option.get("text", "선택"))
+		button.text = option_text
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		button.custom_minimum_size = Vector2(0.0, 34.0)
-		button.add_theme_font_size_override("font_size", 13)
-		_style_button(button, true)
+		button.custom_minimum_size = Vector2(0.0, 30.0)
+		button.add_theme_font_size_override("font_size", 11)
 		button.pressed.connect(_choose_option.bind(option))
 		choice_box.add_child(button)
+		_register_choice_button(button, option_text)
+	_select_choice_index(0)
 	call_deferred("_position_speech_bubble")
 
 
@@ -514,24 +574,34 @@ func _show_end(node: Dictionary) -> void:
 	var speaker := str(node.get("speaker", "완료"))
 	_show_bubble_line(speaker, str(node.get("text", "")), active_npc_id)
 	feedback_label.text = "자동 저장 완료"
+	bubble_hint.text = "↑↓ 선택 · 스페이스바로 결정"
 
 	var explore_button := Button.new()
 	explore_button.text = "대화를 마치고 둘러보기"
-	explore_button.custom_minimum_size = Vector2(0.0, 34.0)
-	_style_button(explore_button, true)
+	explore_button.custom_minimum_size = Vector2(0.0, 30.0)
+	explore_button.add_theme_font_size_override("font_size", 11)
 	explore_button.pressed.connect(_finish_conversation)
 	choice_box.add_child(explore_button)
+	_register_choice_button(explore_button, explore_button.text)
 
 	var replay_button := Button.new()
 	replay_button.text = "이 장면 다시 보기"
-	replay_button.custom_minimum_size = Vector2(0.0, 32.0)
-	_style_button(replay_button, false)
+	replay_button.custom_minimum_size = Vector2(0.0, 29.0)
+	replay_button.add_theme_font_size_override("font_size", 11)
 	replay_button.pressed.connect(_start_new_chapter)
 	choice_box.add_child(replay_button)
+	_register_choice_button(replay_button, replay_button.text)
+	_select_choice_index(0)
 
 
 func _show_bubble_line(speaker: String, text_value: String, speaker_id: String) -> void:
-	bubble_speaker.text = speaker
+	if CHARACTERS.has(speaker_id):
+		var speaker_gender := str(CHARACTERS[speaker_id]["gender"])
+		bubble_speaker.text = "%s %s" % [_gender_marker(speaker_gender), speaker]
+		bubble_speaker.add_theme_color_override("font_color", _gender_color(speaker_gender).darkened(0.28))
+	else:
+		bubble_speaker.text = speaker
+		bubble_speaker.add_theme_color_override("font_color", Color("#59402b"))
 	bubble_target_id = speaker_id if not speaker_id.is_empty() else active_npc_id
 	speech_bubble.size = Vector2(410.0, 140.0)
 	_start_typewriter(text_value)
@@ -541,17 +611,18 @@ func _show_bubble_line(speaker: String, text_value: String, speaker_id: String) 
 func _position_speech_bubble() -> void:
 	if not speech_bubble.visible:
 		return
-	var target_position := player.global_position
+	var target_position := player.global_position + Vector3(0.0, 1.58, 0.0)
 	if bubble_target_id != selected_character_id and npc_nodes.has(bubble_target_id):
-		target_position = (npc_nodes[bubble_target_id] as Node2D).global_position
+		target_position = (npc_nodes[bubble_target_id] as Node3D).global_position + Vector3(0.0, 1.58, 0.0)
+	var screen_position := world_camera.unproject_position(target_position)
 
 	var bubble_size := speech_bubble.size
-	var desired := target_position + Vector2(-bubble_size.x * 0.5, -bubble_size.y - 112.0)
+	var desired := screen_position + Vector2(-bubble_size.x * 0.5, -bubble_size.y - 42.0)
 	desired.x = clampf(desired.x, 24.0, size.x - bubble_size.x - 24.0)
-	desired.y = clampf(desired.y, 108.0, size.y - bubble_size.y - 34.0)
+	desired.y = clampf(desired.y, 72.0, size.y - bubble_size.y - 34.0)
 	speech_bubble.position = desired
 	bubble_tail.position = Vector2(
-		clampf(target_position.x, desired.x + 28.0, desired.x + bubble_size.x - 28.0),
+		clampf(screen_position.x, desired.x + 28.0, desired.x + bubble_size.x - 28.0),
 		desired.y + bubble_size.y - 1.0
 	)
 
@@ -584,6 +655,22 @@ func _advance() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if selection_overlay.visible or not dialogue_active:
 		return
+	if choice_box.get_child_count() > 0:
+		if event.is_action_pressed("ui_up"):
+			get_viewport().set_input_as_handled()
+			_move_choice_selection(-1)
+			return
+		if event.is_action_pressed("ui_down"):
+			get_viewport().set_input_as_handled()
+			_move_choice_selection(1)
+			return
+		if event.is_action_pressed("advance_dialogue"):
+			get_viewport().set_input_as_handled()
+			if is_typing:
+				_finish_typewriter()
+			else:
+				_activate_selected_choice()
+			return
 	if event.is_action_pressed("advance_dialogue"):
 		get_viewport().set_input_as_handled()
 		_advance()
@@ -612,36 +699,113 @@ func _finish_typewriter() -> void:
 
 
 func _clear_choices() -> void:
+	selected_choice_index = -1
 	for child in choice_box.get_children():
 		choice_box.remove_child(child)
 		child.queue_free()
+
+
+func _register_choice_button(button: Button, base_text: String) -> void:
+	button.focus_mode = Control.FOCUS_NONE
+	button.set_meta("choice_text", base_text)
+	var button_index := choice_box.get_child_count() - 1
+	button.mouse_entered.connect(_select_choice_index.bind(button_index))
+
+
+func _move_choice_selection(direction: int) -> void:
+	var choice_count := choice_box.get_child_count()
+	if choice_count == 0:
+		return
+	var next_index := wrapi(selected_choice_index + direction, 0, choice_count)
+	_select_choice_index(next_index)
+
+
+func _select_choice_index(index: int) -> void:
+	var choice_count := choice_box.get_child_count()
+	if choice_count == 0:
+		selected_choice_index = -1
+		return
+	selected_choice_index = clampi(index, 0, choice_count - 1)
+	for button_index in range(choice_count):
+		var button := choice_box.get_child(button_index) as Button
+		if button == null:
+			continue
+		var is_selected := button_index == selected_choice_index
+		var base_text := str(button.get_meta("choice_text", button.text))
+		button.text = ("▶  " if is_selected else "    ") + base_text
+		_style_choice_button(button, is_selected)
+
+
+func _activate_selected_choice() -> void:
+	if selected_choice_index < 0 or selected_choice_index >= choice_box.get_child_count():
+		return
+	var button := choice_box.get_child(selected_choice_index) as Button
+	if button != null and not button.disabled:
+		button.pressed.emit()
 
 
 func _speaker_character_id(speaker: String) -> String:
 	return str(NAME_TO_ID.get(speaker, ""))
 
 
-func _face_npc_toward(npc_id: String, target_position: Vector2) -> void:
-	var npc := npc_nodes.get(npc_id) as Node2D
+func _gender_marker(gender: String) -> String:
+	return "[남]" if gender == "male" else "[여]"
+
+
+func _gender_color(gender: String) -> Color:
+	return Color("#6f9eb5") if gender == "male" else Color("#c98b9f")
+
+
+func _face_npc_toward(npc_id: String, target_position: Vector3) -> void:
+	var npc := npc_nodes.get(npc_id) as Node3D
 	if npc == null:
 		return
 	var direction := target_position - npc.global_position
+	direction.y = 0.0
 	var facing := "down"
-	if absf(direction.x) > absf(direction.y):
+	if absf(direction.x) > absf(direction.z):
 		facing = "right" if direction.x > 0.0 else "left"
 	else:
-		facing = "down" if direction.y > 0.0 else "up"
-	var sprite := npc.get_node("Sprite") as Sprite2D
+		facing = "down" if direction.z > 0.0 else "up"
+	npc.rotation.y = atan2(direction.x, direction.z)
+	_set_npc_facing(npc_id, facing)
+
+
+func _set_npc_facing(npc_id: String, facing: String) -> void:
+	var npc := npc_nodes.get(npc_id) as Node3D
+	if npc == null or str(npc.get_meta("facing", "")) == facing:
+		return
+	npc.set_meta("facing", facing)
+	var sprite := npc.get_node("Sprite") as Sprite3D
 	sprite.texture = load("res://assets/characters/%s/frames/%s.png" % [npc_id, facing])
 
 
-func _animate_npcs() -> void:
-	var now := Time.get_ticks_msec() * 0.002
+func _animate_npcs(delta: float) -> void:
+	var now := Time.get_ticks_msec() * 0.001
 	var index := 0
 	for character_id in npc_nodes:
-		var npc := npc_nodes[character_id] as Node2D
-		var sprite := npc.get_node("Sprite") as Sprite2D
-		sprite.position.y = -36.0 + sin(now + float(index) * 1.3) * 0.55
+		var npc := npc_nodes[character_id] as Node3D
+		var sprite := npc.get_node("Sprite") as Sprite3D
+		if not (dialogue_active and character_id == active_npc_id):
+			var anchor: Vector3 = npc.get_meta("anchor_position")
+			var phase := float(npc.get_meta("wander_phase", 0.0))
+			var radius_x := 0.16 + float(index % 3) * 0.055
+			var radius_z := 0.10 + float(index % 2) * 0.045
+			var desired := anchor + Vector3(
+				sin(now * 0.34 + phase) * radius_x,
+				0.0,
+				cos(now * 0.27 + phase) * radius_z
+			)
+			var previous := npc.position
+			npc.position = npc.position.lerp(desired, clampf(delta * 1.8, 0.0, 1.0))
+			var motion := npc.position - previous
+			if motion.length_squared() > 0.0000004:
+				npc.rotation.y = lerp_angle(npc.rotation.y, atan2(motion.x, motion.z), clampf(delta * 8.0, 0.0, 1.0))
+				if absf(motion.x) > absf(motion.z):
+					_set_npc_facing(str(character_id), "right" if motion.x > 0.0 else "left")
+				else:
+					_set_npc_facing(str(character_id), "down" if motion.z > 0.0 else "up")
+		sprite.position.y = 0.96 + sin(now * 2.1 + float(index) * 1.3) * 0.025
 		index += 1
 
 
@@ -655,11 +819,11 @@ func _update_character_focus(focus: String, node: Dictionary) -> void:
 	if not focus_id.is_empty():
 		if focus_id == selected_character_id:
 			player_sprite.modulate = Color.WHITE
-			player_tag.modulate = Color("#fff2cf")
+			player_name.modulate = Color("#fff2cf")
 		elif npc_nodes.has(focus_id):
-			var npc := npc_nodes[focus_id] as Node2D
-			(npc.get_node("Sprite") as Sprite2D).modulate = Color.WHITE
-			(npc.get_node("Tag") as PanelContainer).modulate = Color("#fff2cf")
+			var npc := npc_nodes[focus_id] as Node3D
+			(npc.get_node("Sprite") as Sprite3D).modulate = Color.WHITE
+			(npc.get_node("Tag") as Label3D).modulate = Color("#fff2cf")
 	if node.has("minwoo_mood") and selected_character_id == "kang_minwoo":
 		player_mood.text = str(node["minwoo_mood"])
 	if node.has("seojeong_mood") and selected_character_id == "yun_seojeong":
@@ -668,11 +832,12 @@ func _update_character_focus(focus: String, node: Dictionary) -> void:
 
 func _reset_character_emphasis() -> void:
 	player_sprite.modulate = Color.WHITE
-	player_tag.modulate = Color.WHITE
+	if not selected_character_id.is_empty():
+		player_name.modulate = _gender_color(str(CHARACTERS[selected_character_id]["gender"])).lightened(0.18)
 	for character_id in npc_nodes:
-		var npc := npc_nodes[character_id] as Node2D
-		(npc.get_node("Sprite") as Sprite2D).modulate = Color.WHITE
-		(npc.get_node("Tag") as PanelContainer).modulate = Color.WHITE
+		var npc := npc_nodes[character_id] as Node3D
+		(npc.get_node("Sprite") as Sprite3D).modulate = Color.WHITE
+		(npc.get_node("Tag") as Label3D).modulate = _gender_color(str(CHARACTERS[character_id]["gender"])).lightened(0.18)
 
 
 func _update_status(new_stats: Dictionary = {}) -> void:
@@ -713,13 +878,13 @@ func _show_fatal_error(message: String) -> void:
 
 func _apply_visual_style() -> void:
 	top_hud.add_theme_stylebox_override("panel", _make_panel_style(Color("#132126e8"), Color("#52666a"), 1, 14))
-	player_tag.add_theme_stylebox_override("panel", _make_panel_style(Color("#17262cdd"), Color("#749095"), 1, 10))
 	speech_bubble.add_theme_stylebox_override("panel", _make_panel_style(Color("#f3ecdcfa"), Color("#b98a58"), 2, 18))
 	selection_panel.add_theme_stylebox_override("panel", _make_panel_style(Color("#101b1fe8"), Color("#8b7155"), 1, 20))
 	_style_button(restart_button, false)
 	_style_button(load_button, false)
 	_style_button(character_button, false)
 	_style_button(continue_button, true)
+	continue_button.add_theme_font_size_override("font_size", 11)
 	_update_status()
 
 
@@ -742,4 +907,15 @@ func _style_button(button: Button, is_primary: bool) -> void:
 	button.add_theme_stylebox_override("hover", _make_panel_style(hover_color, Color("#e1bd8c"), 1, 9))
 	button.add_theme_stylebox_override("pressed", _make_panel_style(pressed_color, Color("#9e774e"), 1, 9))
 	button.add_theme_color_override("font_color", Color("#f5efe5"))
+	button.add_theme_color_override("font_hover_color", Color.WHITE)
+
+
+func _style_choice_button(button: Button, is_selected: bool) -> void:
+	var normal_color := Color("#9a693c") if is_selected else Color("#5d4b3c")
+	var border_color := Color("#f0c58b") if is_selected else Color("#9b7c5e")
+	var border_width := 2 if is_selected else 1
+	button.add_theme_stylebox_override("normal", _make_panel_style(normal_color, border_color, border_width, 8))
+	button.add_theme_stylebox_override("hover", _make_panel_style(Color("#ad7745"), Color("#f1cf9e"), 2, 8))
+	button.add_theme_stylebox_override("pressed", _make_panel_style(Color("#754b29"), Color("#c99c69"), 2, 8))
+	button.add_theme_color_override("font_color", Color("#fff7e9") if is_selected else Color("#e2d7ca"))
 	button.add_theme_color_override("font_hover_color", Color.WHITE)

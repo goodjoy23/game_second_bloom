@@ -44,9 +44,9 @@ func _draw_room(viewport_size: Vector2) -> void:
 
 func _draw_windows(viewport_size: Vector2) -> void:
 	var windows := [
-		Rect2(248.0, 112.0, 206.0, 104.0),
-		Rect2(476.0, 112.0, 206.0, 104.0),
-		Rect2(704.0, 112.0, 206.0, 104.0),
+		Rect2(278.0, 120.0, 180.0, 92.0),
+		Rect2(494.0, 120.0, 180.0, 92.0),
+		Rect2(710.0, 120.0, 180.0, 92.0),
 	]
 	for window in windows:
 		draw_rect(window.grow(6.0), Color("#171c1d"))
@@ -60,7 +60,7 @@ func _draw_windows(viewport_size: Vector2) -> void:
 			var rain_y: float = window.position.y + fmod(float(i * 29) + elapsed * (82.0 + float(i % 5) * 6.0), window.size.y - 16.0)
 			draw_line(Vector2(rain_x, rain_y), Vector2(rain_x - 3.0, rain_y + 12.0), Color(0.66, 0.82, 0.87, 0.34), 1.0)
 
-	draw_rect(Rect2(242.0, 218.0, 674.0, 9.0), Color("#17191a"))
+	draw_rect(Rect2(272.0, 214.0, 624.0, 9.0), Color("#17191a"))
 	draw_circle(Vector2(viewport_size.x * 0.72, 170.0), 4.0, Color("#d7b373"))
 
 
@@ -81,34 +81,34 @@ func _draw_bookshelves() -> void:
 
 
 func _draw_counter() -> void:
-	draw_rect(Rect2(1000.0, 128.0, 238.0, 190.0), Color("#1d1917"))
-	draw_rect(Rect2(1008.0, 138.0, 222.0, 171.0), Color("#59402e"))
-	draw_rect(Rect2(992.0, 278.0, 250.0, 41.0), Color("#32241d"))
-	draw_rect(Rect2(986.0, 271.0, 258.0, 13.0), Color("#8b6847"))
-	for x in [1024.0, 1080.0, 1136.0, 1192.0]:
-		draw_line(Vector2(x, 286.0), Vector2(x, 309.0), Color("#6b4d37"), 2.0)
+	draw_rect(Rect2(1040.0, 136.0, 188.0, 166.0), Color("#1d1917"))
+	draw_rect(Rect2(1048.0, 144.0, 172.0, 149.0), Color("#59402e"))
+	draw_rect(Rect2(1032.0, 267.0, 202.0, 36.0), Color("#32241d"))
+	draw_rect(Rect2(1026.0, 260.0, 214.0, 12.0), Color("#8b6847"))
+	for x in [1062.0, 1110.0, 1158.0, 1206.0]:
+		draw_line(Vector2(x, 276.0), Vector2(x, 295.0), Color("#6b4d37"), 2.0)
 
-	draw_rect(Rect2(1042.0, 188.0, 50.0, 60.0), Color("#202628"))
-	draw_rect(Rect2(1048.0, 194.0, 38.0, 42.0), Color("#4e5a59"))
-	draw_circle(Vector2(1067.0, 209.0), 8.0, Color("#c8b07b"))
-	draw_rect(Rect2(1144.0, 236.0, 34.0, 24.0), Color("#d3c4a3"))
-	draw_rect(Rect2(1182.0, 241.0, 22.0, 19.0), Color("#85705c"))
+	draw_rect(Rect2(1066.0, 180.0, 44.0, 54.0), Color("#202628"))
+	draw_rect(Rect2(1072.0, 186.0, 32.0, 37.0), Color("#4e5a59"))
+	draw_circle(Vector2(1088.0, 200.0), 7.0, Color("#c8b07b"))
+	draw_rect(Rect2(1152.0, 229.0, 31.0, 22.0), Color("#d3c4a3"))
+	draw_rect(Rect2(1188.0, 233.0, 20.0, 18.0), Color("#85705c"))
 
 
 func _draw_tables() -> void:
-	_draw_table(Rect2(446.0, 250.0, 210.0, 130.0), Color("#6f5138"))
-	_draw_chair(Vector2(420.0, 292.0), true)
-	_draw_chair(Vector2(682.0, 292.0), true)
+	_draw_table(Rect2(490.0, 270.0, 150.0, 92.0), Color("#6f5138"))
+	_draw_chair(Vector2(466.0, 306.0), true)
+	_draw_chair(Vector2(664.0, 306.0), true)
 
-	_draw_table(Rect2(710.0, 332.0, 190.0, 116.0), Color("#654934"))
-	_draw_chair(Vector2(682.0, 368.0), true)
-	_draw_chair(Vector2(926.0, 368.0), true)
+	_draw_table(Rect2(748.0, 360.0, 142.0, 84.0), Color("#654934"))
+	_draw_chair(Vector2(722.0, 392.0), true)
+	_draw_chair(Vector2(916.0, 392.0), true)
 
-	draw_circle(Vector2(546.0, 306.0), 15.0, Color("#d7c9ab"))
-	draw_circle(Vector2(546.0, 306.0), 9.0, Color("#49372c"))
-	draw_rect(Rect2(775.0, 374.0, 48.0, 30.0), Color("#d0b98c"))
-	draw_line(Vector2(781.0, 382.0), Vector2(816.0, 382.0), Color("#8f7756"), 1.0)
-	draw_line(Vector2(781.0, 389.0), Vector2(810.0, 389.0), Color("#8f7756"), 1.0)
+	draw_circle(Vector2(565.0, 311.0), 12.0, Color("#d7c9ab"))
+	draw_circle(Vector2(565.0, 311.0), 7.0, Color("#49372c"))
+	draw_rect(Rect2(792.0, 385.0, 42.0, 26.0), Color("#d0b98c"))
+	draw_line(Vector2(798.0, 392.0), Vector2(828.0, 392.0), Color("#8f7756"), 1.0)
+	draw_line(Vector2(798.0, 398.0), Vector2(824.0, 398.0), Color("#8f7756"), 1.0)
 
 
 func _draw_table(rect: Rect2, color: Color) -> void:

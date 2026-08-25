@@ -1,17 +1,12 @@
 class_name PlayerController
-extends CharacterBody2D
+extends CharacterBody3D
 
-const WALK_SPEED := 185.0
-const WALK_BOB_HEIGHT := 1.5
-const WORLD_BOUNDS := Rect2(76.0, 132.0, 1128.0, 500.0)
-const OBSTACLES: Array[Rect2] = [
-	Rect2(42.0, 126.0, 182.0, 190.0),
-	Rect2(1000.0, 128.0, 238.0, 190.0),
-	Rect2(446.0, 250.0, 210.0, 130.0),
-	Rect2(710.0, 332.0, 190.0, 116.0),
-]
+const WALK_SPEED := 4.1
+const ACCELERATION := 18.0
+const TURN_SPEED := 10.0
+const WALK_BOB_HEIGHT := 0.045
 
-@onready var sprite: Sprite2D = $PlayerSprite
+@onready var sprite: Sprite3D = $PlayerSprite
 
 var movement_enabled := true
 var walk_phase := 0.0
@@ -32,64 +27,54 @@ func configure_character(new_character_id: String) -> void:
 
 func _physics_process(delta: float) -> void:
 	if not movement_enabled:
-		velocity = Vector2.ZERO
+		velocity = velocity.move_toward(Vector3.ZERO, ACCELERATION * delta)
 		_reset_walk_bob()
+		move_and_slide()
 		return
 
-	var direction := _read_direction()
+	var input_vector := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+	var direction := Vector3(input_vector.x, 0.0, input_vector.y)
 	if direction.length_squared() > 1.0:
 		direction = direction.normalized()
 
-	var previous_position := global_position
-	velocity = direction * WALK_SPEED
-	move_and_slide()
-	global_position.x = clampf(global_position.x, WORLD_BOUNDS.position.x, WORLD_BOUNDS.end.x)
-	global_position.y = clampf(global_position.y, WORLD_BOUNDS.position.y, WORLD_BOUNDS.end.y)
+	var target_velocity := direction * WALK_SPEED
+	velocity.x = move_toward(velocity.x, target_velocity.x, ACCELERATION * delta)
+	velocity.z = move_toward(velocity.z, target_velocity.z, ACCELERATION * delta)
+	velocity.y = 0.0
 
-	if _is_inside_obstacle(global_position):
-		global_position = previous_position
-
-	if direction.is_zero_approx():
-		_reset_walk_bob()
-	else:
+	if not direction.is_zero_approx():
+		var target_yaw := atan2(direction.x, direction.z)
+		rotation.y = lerp_angle(rotation.y, target_yaw, clampf(TURN_SPEED * delta, 0.0, 1.0))
 		_update_facing(direction)
-		walk_phase += delta * 13.0
-		sprite.position.y = -36.0 + sin(walk_phase) * WALK_BOB_HEIGHT
+		walk_phase += delta * 12.0
+		sprite.position.y = 0.96 + sin(walk_phase) * WALK_BOB_HEIGHT
+	else:
+		_reset_walk_bob()
+
+	move_and_slide()
 
 
 func set_movement_enabled(enabled: bool) -> void:
 	movement_enabled = enabled
 	if not movement_enabled:
-		velocity = Vector2.ZERO
+		velocity = Vector3.ZERO
 		_reset_walk_bob()
 
 
-func face_toward(target_position: Vector2) -> void:
+func face_toward(target_position: Vector3) -> void:
 	var direction := target_position - global_position
-	if absf(direction.x) > absf(direction.y):
+	direction.y = 0.0
+	if direction.is_zero_approx():
+		return
+	rotation.y = atan2(direction.x, direction.z)
+	_update_facing(direction)
+
+
+func _update_facing(direction: Vector3) -> void:
+	if absf(direction.x) > absf(direction.z):
 		_set_facing("right" if direction.x > 0.0 else "left")
 	else:
-		_set_facing("down" if direction.y > 0.0 else "up")
-
-
-func _read_direction() -> Vector2:
-	var direction := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
-	if Input.is_key_pressed(KEY_A):
-		direction.x -= 1.0
-	if Input.is_key_pressed(KEY_D):
-		direction.x += 1.0
-	if Input.is_key_pressed(KEY_W):
-		direction.y -= 1.0
-	if Input.is_key_pressed(KEY_S):
-		direction.y += 1.0
-	return direction.limit_length(1.0)
-
-
-func _update_facing(direction: Vector2) -> void:
-	if absf(direction.x) > absf(direction.y):
-		_set_facing("right" if direction.x > 0.0 else "left")
-	else:
-		_set_facing("down" if direction.y > 0.0 else "up")
+		_set_facing("down" if direction.z > 0.0 else "up")
 
 
 func _set_facing(new_facing: String) -> void:
@@ -101,13 +86,6 @@ func _set_facing(new_facing: String) -> void:
 		sprite.texture = texture
 
 
-func _is_inside_obstacle(point: Vector2) -> bool:
-	for obstacle in OBSTACLES:
-		if obstacle.grow(18.0).has_point(point):
-			return true
-	return false
-
-
 func _reset_walk_bob() -> void:
 	walk_phase = 0.0
-	sprite.position.y = -36.0
+	sprite.position.y = 0.96
