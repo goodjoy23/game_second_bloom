@@ -32,6 +32,23 @@
       "path": "assets/characters/kang_minwoo/v3_mini_chunky.png",
       "perspective": "topdown",
       "size": "124x124"
+    },
+    {
+      "asset_id": "51380b93-4dce-4f09-94c7-81f0f2e64da5",
+      "sha12": "12fda9744dd1",
+      "label": "kang_minwoo_sheet_raw_4dir",
+      "path": "assets/characters/kang_minwoo/sheet_raw_4dir.png",
+      "perspective": "topdown",
+      "size": "260x298",
+      "note": "2x2 4방향 원본. tools/slice_sheet.py 로 32x32 프레임 추출"
     }
-  ]
+  ],
+  "settings": {
+    "mode": "Character & Props (assets)",
+    "style": "Pixel",
+    "frame_size": "32x32",
+    "output": "Sheet + frames",
+    "perspective": "topdown",
+    "base_reference_asset_id": "f6a41b23-7da5-4816-89aa-fa15afa57a5c"
+  }
 }
