@@ -1,0 +1,37 @@
+{
+  "project_id": "75529705-da8f-4a46-bf52-fd962f04d166",
+  "assets": [
+    {
+      "asset_id": "f6a41b23-7da5-4816-89aa-fa15afa57a5c",
+      "sha12": "7b8c831fe65a",
+      "label": "kang_minwoo_v1_work_apron",
+      "path": "assets/characters/kang_minwoo/v1_work_apron.png",
+      "perspective": "topdown",
+      "size": "142x142"
+    },
+    {
+      "asset_id": "b8455f90-ad9a-4997-a813-feb97940c819",
+      "sha12": "bc58fcae6c69",
+      "label": "kang_minwoo_v2_cardigan",
+      "path": "assets/characters/kang_minwoo/v2_cardigan.png",
+      "perspective": "topdown",
+      "size": "128x128"
+    },
+    {
+      "asset_id": "0440ed56-995b-4472-877c-d894375cad46",
+      "sha12": "2326eff90e92",
+      "label": "kang_minwoo_v0_prev_session",
+      "path": "assets/characters/kang_minwoo/v0_prev_session.png",
+      "perspective": "topdown",
+      "size": "178x178"
+    },
+    {
+      "asset_id": "0e75d518-4e33-45bd-9b6d-d5e3a229ae18",
+      "sha12": "97fe8d1d2293",
+      "label": "kang_minwoo_v3_mini_chunky",
+      "path": "assets/characters/kang_minwoo/v3_mini_chunky.png",
+      "perspective": "topdown",
+      "size": "124x124"
+    }
+  ]
+}
