@@ -1,0 +1,14 @@
+# Godot 4 에디터 캐시. 열 때마다 재생성되므로 추적하지 않는다.
+.godot/
+
+# 내보내기 산출물
+/build/
+/export/
+*.exe
+*.pck
+*.zip
+
+# 에디터/OS 부산물
+*.tmp
+.DS_Store
+Thumbs.db
