@@ -41,6 +41,15 @@
       "perspective": "topdown",
       "size": "260x298",
       "note": "2x2 4방향 원본. tools/slice_sheet.py 로 32x32 프레임 추출"
+    },
+    {
+      "asset_id": "77939a8e-cadb-47a7-95b4-3dcdd1c709a4",
+      "sha12": "317b20047fe3",
+      "label": "yun_seojeong_sheet_raw_4dir",
+      "path": "assets/characters/yun_seojeong/sheet_raw_4dir.png",
+      "perspective": "topdown",
+      "size": "206x198",
+      "note": "2x2 4방향 원본. style guide: 강민우 시트 + v1"
     }
   ],
   "settings": {

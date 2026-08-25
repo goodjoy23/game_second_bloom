@@ -1,0 +1,302 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="Script" path="res://scripts/rain_backdrop.gd" id="2_backdrop"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_main")
+
+[node name="RainBackdrop" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_backdrop")
+
+[node name="Dimmer" type="ColorRect" parent="."]
+mouse_filter = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.025, 0.035, 0.04, 0.20)
+
+[node name="SafeMargin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 28.0
+offset_top = 24.0
+offset_right = -28.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RootVBox" type="VBoxContainer" parent="SafeMargin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="TopBar" type="PanelContainer" parent="SafeMargin/RootVBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 74)
+
+[node name="TopMargin" type="MarginContainer" parent="SafeMargin/RootVBox/TopBar"]
+layout_mode = 2
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 14
+
+[node name="TopHBox" type="HBoxContainer" parent="SafeMargin/RootVBox/TopBar/TopMargin"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="TitleStack" type="VBoxContainer" parent="SafeMargin/RootVBox/TopBar/TopMargin/TopHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+
+[node name="GameTitle" type="Label" parent="SafeMargin/RootVBox/TopBar/TopMargin/TopHBox/TitleStack"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.83, 0.63, 1)
+theme_override_font_sizes/font_size = 22
+text = "오후 네 시, 다시 봄"
+
+[node name="ChapterLabel" type="Label" parent="SafeMargin/RootVBox/TopBar/TopMargin/TopHBox/TitleStack"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.74, 0.78, 0.77, 1)
+theme_override_font_sizes/font_size = 13
+text = "제1장 · 비가 오면 문은 불어난다"
+
+[node name="ProgressStack" type="VBoxContainer" parent="SafeMargin/RootVBox/TopBar/TopMargin/TopHBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(190, 0)
+theme_override_constants/separation = 4
+
+[node name="ProgressTitle" type="Label" parent="SafeMargin/RootVBox/TopBar/TopMargin/TopHBox/ProgressStack"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.73, 0.78, 0.77, 1)
+theme_override_font_sizes/font_size = 12
+text = "장면 진행"
+
+[node name="ProgressBar" type="ProgressBar" parent="SafeMargin/RootVBox/TopBar/TopMargin/TopHBox/ProgressStack"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(190, 12)
+show_percentage = false
+
+[node name="RestartButton" type="Button" parent="SafeMargin/RootVBox/TopBar/TopMargin/TopHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(92, 42)
+text = "처음부터"
+
+[node name="LoadButton" type="Button" parent="SafeMargin/RootVBox/TopBar/TopMargin/TopHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(92, 42)
+text = "이어하기"
+
+[node name="CharacterArea" type="HBoxContainer" parent="SafeMargin/RootVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 28
+alignment = 1
+
+[node name="MinwooCard" type="PanelContainer" parent="SafeMargin/RootVBox/CharacterArea"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(270, 238)
+size_flags_vertical = 8
+
+[node name="Margin" type="MarginContainer" parent="SafeMargin/RootVBox/CharacterArea/MinwooCard"]
+layout_mode = 2
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 22
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="SafeMargin/RootVBox/CharacterArea/MinwooCard/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Role" type="Label" parent="SafeMargin/RootVBox/CharacterArea/MinwooCard/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.60, 0.74, 0.77, 1)
+theme_override_font_sizes/font_size = 12
+text = "옹이 목공방 · 46세"
+
+[node name="Name" type="Label" parent="SafeMargin/RootVBox/CharacterArea/MinwooCard/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94, 0.94, 0.90, 1)
+theme_override_font_sizes/font_size = 30
+text = "강민우"
+
+[node name="Divider" type="HSeparator" parent="SafeMargin/RootVBox/CharacterArea/MinwooCard/Margin/VBox"]
+layout_mode = 2
+
+[node name="PortraitHint" type="Label" parent="SafeMargin/RootVBox/CharacterArea/MinwooCard/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.64, 0.68, 0.68, 1)
+theme_override_font_sizes/font_size = 14
+text = "젖은 회색 작업복\n말보다 손이 먼저 움직이는 사람"
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="MinwooMood" type="Label" parent="SafeMargin/RootVBox/CharacterArea/MinwooCard/Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94, 0.72, 0.45, 1)
+theme_override_font_sizes/font_size = 13
+text = "비에 젖음"
+horizontal_alignment = 2
+
+[node name="CenterSpacer" type="Control" parent="SafeMargin/RootVBox/CharacterArea"]
+layout_mode = 2
+custom_minimum_size = Vector2(260, 0)
+size_flags_horizontal = 3
+
+[node name="SeojeongCard" type="PanelContainer" parent="SafeMargin/RootVBox/CharacterArea"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(270, 238)
+size_flags_vertical = 8
+
+[node name="Margin" type="MarginContainer" parent="SafeMargin/RootVBox/CharacterArea/SeojeongCard"]
+layout_mode = 2
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 22
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="SafeMargin/RootVBox/CharacterArea/SeojeongCard/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Role" type="Label" parent="SafeMargin/RootVBox/CharacterArea/SeojeongCard/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.73, 0.67, 0.61, 1)
+theme_override_font_sizes/font_size = 12
+text = "북카페 오후 · 44세"
+
+[node name="Name" type="Label" parent="SafeMargin/RootVBox/CharacterArea/SeojeongCard/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94, 0.94, 0.90, 1)
+theme_override_font_sizes/font_size = 30
+text = "윤서정"
+
+[node name="Divider" type="HSeparator" parent="SafeMargin/RootVBox/CharacterArea/SeojeongCard/Margin/VBox"]
+layout_mode = 2
+
+[node name="PortraitHint" type="Label" parent="SafeMargin/RootVBox/CharacterArea/SeojeongCard/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.64, 0.68, 0.68, 1)
+theme_override_font_sizes/font_size = 14
+text = "베이지색 카디건\n괜찮다는 말에 익숙한 사람"
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="SeojeongMood" type="Label" parent="SafeMargin/RootVBox/CharacterArea/SeojeongCard/Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94, 0.72, 0.45, 1)
+theme_override_font_sizes/font_size = 13
+text = "지친 표정"
+horizontal_alignment = 2
+
+[node name="DialoguePanel" type="PanelContainer" parent="SafeMargin/RootVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 268)
+
+[node name="DialogueMargin" type="MarginContainer" parent="SafeMargin/RootVBox/DialoguePanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 26
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 26
+theme_override_constants/margin_bottom = 18
+
+[node name="DialogueVBox" type="VBoxContainer" parent="SafeMargin/RootVBox/DialoguePanel/DialogueMargin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="SpeakerRow" type="HBoxContainer" parent="SafeMargin/RootVBox/DialoguePanel/DialogueMargin/DialogueVBox"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="SpeakerLabel" type="Label" parent="SafeMargin/RootVBox/DialoguePanel/DialogueMargin/DialogueVBox/SpeakerRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.98, 0.78, 0.47, 1)
+theme_override_font_sizes/font_size = 20
+text = "내레이션"
+
+[node name="AutosaveLabel" type="Label" parent="SafeMargin/RootVBox/DialoguePanel/DialogueMargin/DialogueVBox/SpeakerRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.48, 0.56, 0.56, 1)
+theme_override_font_sizes/font_size = 12
+text = "● 자동 저장"
+
+[node name="DialogueText" type="RichTextLabel" parent="SafeMargin/RootVBox/DialoguePanel/DialogueMargin/DialogueVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 74)
+size_flags_vertical = 3
+theme_override_colors/default_color = Color(0.92, 0.92, 0.87, 1)
+theme_override_font_sizes/normal_font_size = 19
+bbcode_enabled = true
+fit_content = false
+scroll_active = false
+autowrap_mode = 2
+text = "이야기를 불러오는 중입니다."
+
+[node name="FeedbackLabel" type="Label" parent="SafeMargin/RootVBox/DialoguePanel/DialogueMargin/DialogueVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.62, 0.78, 0.70, 1)
+theme_override_font_sizes/font_size = 12
+text = ""
+
+[node name="ChoiceBox" type="VBoxContainer" parent="SafeMargin/RootVBox/DialoguePanel/DialogueMargin/DialogueVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="BottomRow" type="HBoxContainer" parent="SafeMargin/RootVBox/DialoguePanel/DialogueMargin/DialogueVBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="StatusLabel" type="Label" parent="SafeMargin/RootVBox/DialoguePanel/DialogueMargin/DialogueVBox/BottomRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.54, 0.63, 0.62, 1)
+theme_override_font_sizes/font_size = 12
+text = "애정 0 · 신뢰 0 · 존중 0 · 서운함 0"
+
+[node name="ContinueButton" type="Button" parent="SafeMargin/RootVBox/DialoguePanel/DialogueMargin/DialogueVBox/BottomRow"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(138, 40)
+text = "계속  ▶"
+
+[node name="TypewriterTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 0.022
+
