@@ -70,13 +70,13 @@
       "note": "2x2 4방향 원본. style guide: 강민우+윤서정 시트"
     },
     {
-      "asset_id": "485d1bc4-0a6c-412d-af0a-547b3f026e2b",
-      "sha12": "b50d544639a2",
+      "asset_id": "b56f52ed-4386-41b9-9a08-3aa95374a3a7",
+      "sha12": "2f0a99e91f38",
       "label": "bae_suhyeon_sheet_raw_4dir",
       "path": "assets/characters/bae_suhyeon/sheet_raw_4dir.png",
       "perspective": "topdown",
-      "size": "203x198",
-      "note": "2x2 4방향 원본. style guide: 강민우+윤서정 시트"
+      "size": "194x174",
+      "note": "2x2 4방향. 485d1bc4 를 edit_asset_id 로 편집해 재킷 명도를 올린 버전"
     }
   ],
   "settings": {
