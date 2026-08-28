@@ -19,6 +19,18 @@
 - 출판 기준 정사: 민우와 서정의 관계를 중심으로 한 문학적 재구성
 - 게임 분기: 재회, 성숙한 이별, 새로운 만남, 자발적 홀로서기
 
+## 저장소 구조
+
+```text
+.
+├─ games/   Godot 게임 프로젝트, 에셋, 시나리오와 검증 도구
+├─ data/    제1장 대화 데이터
+├─ docs/    게임 기획 문서와 캐릭터 시트
+└─ novel/   소설판 기획 문서와 원고
+```
+
+게임과 소설은 같은 주제를 공유하지만 구현물과 원고를 분리해 관리한다. Godot 프로젝트 루트는 저장소 루트가 아니라 `games/`이며, 게임 실행과 검증 명령도 이 폴더를 기준으로 한다.
+
 ## 소설판 《우리는 같은 날을 다르게 적었다》 (가제)
 
 이창근과 이인선이 같은 하루를 각자 1인칭으로 기록하고, 두 기록을 교차 배열해 한 권으로 합치는 작품이다. 원고와 기획 문서는 [novel/](novel/README.md) 아래에 있다.
@@ -63,7 +75,7 @@
 ### Godot 에디터에서 실행
 
 1. Godot을 실행하고 `가져오기(Import)`를 선택한다.
-2. 프로젝트 루트의 `project.godot` 파일을 선택한다.
+2. `games/project.godot` 파일을 선택한다.
 3. 프로젝트가 열리면 `F5` 또는 오른쪽 위의 프로젝트 실행 버튼을 누른다.
 4. 시작 화면에서 플레이할 캐릭터를 선택한다.
 5. 방향키 `← ↑ ↓ →`로 선택한 캐릭터를 움직인다. 캐릭터는 걷는 방향으로 자연스럽게 회전한다.
@@ -77,23 +89,25 @@
 현재 개발 PC에서는 다음 PowerShell 명령으로 에디터를 바로 열 수 있다.
 
 ```powershell
-& "D:\utils\Godot_v4.7.2\Godot_v4.7.2-stable_win64.exe" --editor --path "D:\게임\중년의연애소설"
+& "D:\utils\Godot_v4.7.2\Godot_v4.7.2-stable_win64.exe" --editor --path "D:\게임\중년의연애소설\games"
 ```
 
 에디터를 거치지 않고 게임을 바로 실행하려면 다음 명령을 사용한다.
 
 ```powershell
-& "D:\utils\Godot_v4.7.2\Godot_v4.7.2-stable_win64.exe" --path "D:\게임\중년의연애소설"
+& "D:\utils\Godot_v4.7.2\Godot_v4.7.2-stable_win64.exe" --path "D:\게임\중년의연애소설\games"
 ```
 
-다른 환경에서는 위 경로를 각자의 Godot 실행 파일과 프로젝트 폴더 경로로 바꾸면 된다. 자세한 현재 구현 범위와 파일 구조는 [게임 시작 안내](GAME_START.md)를 참고한다.
+다른 환경에서는 위 경로를 각자의 Godot 실행 파일과 `games/` 폴더 경로로 바꾸면 된다. 자세한 현재 구현 범위와 게임 내부 파일 구조는 [게임 시작 안내](games/GAME_START.md)를 참고한다.
+
+> **데이터 경로 확인 필요:** 현재 제1장 데이터는 저장소 루트의 `data/chapter_01.json`에 있지만, 게임 코드와 검증 스크립트는 Godot 리소스 경로 `res://data/chapter_01.json`, 즉 `games/data/chapter_01.json`을 읽는다. 게임을 실행하거나 검증하기 전에 데이터 위치를 게임 프로젝트 구조와 맞춰야 한다.
 
 ### 챕터 데이터 검증
 
 제1장 데이터의 중복 ID와 끊어진 대화 연결은 다음 명령으로 검사한다.
 
 ```powershell
-& "D:\utils\Godot_v4.7.2\Godot_v4.7.2-stable_win64_console.exe" --headless --path "D:\게임\중년의연애소설" --script "res://tests/validate_chapter.gd"
+& "D:\utils\Godot_v4.7.2\Godot_v4.7.2-stable_win64_console.exe" --headless --path "D:\게임\중년의연애소설\games" --script "res://tests/validate_chapter.gd"
 ```
 
 정상이면 `Chapter validation passed: 27 nodes`가 출력된다.
@@ -101,7 +115,7 @@
 3D 충돌, 이동 방향 회전, 근접 대화, NPC 움직임은 다음 명령으로 함께 검사할 수 있다.
 
 ```powershell
-& "D:\utils\Godot_v4.7.2\Godot_v4.7.2-stable_win64_console.exe" --headless --path "D:\게임\중년의연애소설" --script "res://tests/validate_exploration.gd"
+& "D:\utils\Godot_v4.7.2\Godot_v4.7.2-stable_win64_console.exe" --headless --path "D:\게임\중년의연애소설\games" --script "res://tests/validate_exploration.gd"
 ```
 
 ## 문서 안내
@@ -116,10 +130,10 @@
 6. [분기와 엔딩](docs/05_branching_and_endings.md)
 7. [출판 전환 계획](docs/06_publication_plan.md)
 8. [제미나이 기록 정리](docs/99_gemini_record.md)
-9. [마스터 시나리오](scenario/00_master_scenario.md)
-10. [섹터별 시나리오](scenario/sectors/01_meeting.md)
-11. [제1장 소설 본문](scenario/chapter_01_novel.md)
-12. [제1장 게임 대본](scenario/chapter_01_game_script.md)
+9. [마스터 시나리오](games/scenario/00_master_scenario.md)
+10. [섹터별 시나리오](games/scenario/sectors/01_meeting.md)
+11. [제1장 소설 본문](games/scenario/chapter_01_novel.md)
+12. [제1장 게임 대본](games/scenario/chapter_01_game_script.md)
 
 ### 소설판 문서
 
